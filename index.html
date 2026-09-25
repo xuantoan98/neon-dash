@@ -7,109 +7,59 @@
   <meta name="description" content="Neon Dash — game endless runner với cáo máy Kitsune-01.">
   <title>Neon Dash — Endless Runner</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23090b18' d='M0 0h64v64H0z'/%3E%3Cpath fill='%23ff3d8d' d='m13 15 15 8 8 23-18-8zM51 15l-15 8-8 23 18-8z'/%3E%3Ccircle cx='25' cy='31' r='3' fill='%236fffe9'/%3E%3Ccircle cx='39' cy='31' r='3' fill='%236fffe9'/%3E%3C/svg%3E">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap');
-    :root{--ink:#f6f4ff;--muted:#a5a9c8;--pink:#ff3d8d;--cyan:#6fffe9;--purple:#705cff;--panel:rgba(12,14,34,.72);--line:rgba(111,255,233,.18)}
-    *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%;background:#070811;color:var(--ink);font-family:'Chakra Petch',system-ui,sans-serif;overflow:hidden}
-    body{min-height:100dvh;display:grid;place-items:center;background:radial-gradient(circle at 70% 20%,#23184a 0,transparent 36%),radial-gradient(circle at 15% 85%,#17233e 0,transparent 38%),#070811}
-    button{font:inherit;color:inherit}
-    .shell{position:relative;width:min(1180px,100vw);height:min(760px,100dvh);min-height:540px;overflow:hidden;background:#090b18;box-shadow:0 0 100px rgba(112,92,255,.25);isolation:isolate}
-    canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
-    .grain{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.055;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E")}
-    .topbar{position:absolute;z-index:4;top:0;left:0;right:0;display:flex;align-items:flex-start;justify-content:space-between;padding:28px 34px;pointer-events:none;text-shadow:0 2px 12px #050611}
-    .brand{display:flex;align-items:center;gap:12px}.mark{width:38px;height:38px;border:1px solid var(--cyan);display:grid;place-items:center;transform:rotate(45deg);box-shadow:0 0 20px rgba(111,255,233,.25)}.mark span{transform:rotate(-45deg);color:var(--cyan);font-size:18px}
-    .brand strong{display:block;font-size:18px;letter-spacing:.16em}.brand small{display:block;color:var(--muted);font:10px 'Space Mono';letter-spacing:.2em;margin-top:3px}
-    .stats{display:flex;gap:30px;text-align:right}.stat span{display:block;color:var(--muted);font:10px 'Space Mono';letter-spacing:.18em;text-transform:uppercase}.stat b{font:700 24px 'Space Mono';letter-spacing:.08em}
-    .energy{position:absolute;z-index:4;right:34px;top:90px;width:190px;pointer-events:none}.energy-label{display:flex;justify-content:space-between;font:10px 'Space Mono';color:var(--muted);letter-spacing:.12em}.track{height:4px;background:rgba(255,255,255,.12);margin-top:7px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--cyan));box-shadow:0 0 10px var(--cyan);transition:width .15s}
-    .overlay{position:absolute;inset:0;z-index:5;display:grid;place-items:center;padding:28px;background:linear-gradient(90deg,rgba(5,6,17,.87),rgba(5,6,17,.3));transition:.35s}.overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
-    .card{width:min(560px,100%);margin-right:auto;margin-left:5%;padding:32px 0}.eyebrow{font:11px 'Space Mono';color:var(--cyan);letter-spacing:.23em;text-transform:uppercase;margin-bottom:14px}.card h1{font-size:clamp(54px,8vw,94px);line-height:.8;letter-spacing:-.045em;margin:0;text-transform:uppercase}.card h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1px var(--pink);text-shadow:0 0 24px rgba(255,61,141,.3)}.lead{max-width:470px;color:#c9cce2;font-size:17px;line-height:1.55;margin:25px 0 28px}
-    .action{border:0;background:var(--pink);padding:15px 22px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:6px 6px 0 #542040;transition:.15s;min-width:190px}.action:hover{transform:translate(2px,2px);box-shadow:4px 4px 0 #542040}.action:active{transform:translate(6px,6px);box-shadow:none}
-    .keys{display:flex;flex-wrap:wrap;gap:16px;margin-top:30px;color:var(--muted);font:12px 'Space Mono'}.keys span{display:flex;align-items:center;gap:7px}.key{border:1px solid rgba(255,255,255,.28);padding:4px 8px;color:#fff;background:rgba(255,255,255,.06);min-width:28px;text-align:center}
-    .gameover .eyebrow{color:var(--pink)}.result{font:700 clamp(58px,9vw,104px) 'Space Mono';line-height:1;margin:4px 0 10px;color:var(--cyan);text-shadow:0 0 28px rgba(111,255,233,.25)}
-    .newbest{display:none;color:#071017;background:var(--cyan);font:700 11px 'Space Mono';padding:5px 8px;letter-spacing:.13em;width:max-content;margin-bottom:13px}.newbest.show{display:block}
-    .touch{position:absolute;z-index:4;left:24px;right:24px;bottom:22px;display:none;justify-content:space-between;pointer-events:none}.touch button{pointer-events:auto;width:80px;height:80px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(9,11,24,.45);backdrop-filter:blur(8px);font-size:24px;box-shadow:inset 0 0 18px rgba(111,255,233,.08)}
-    .flash{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;background:var(--pink)}
-    @media(max-width:700px){.shell{height:100dvh;min-height:500px}.topbar{padding:18px}.brand small{display:none}.stats{gap:14px}.stat b{font-size:18px}.energy{right:18px;top:68px;width:138px}.card{margin-left:0;padding:22px}.card h1{font-size:58px}.lead{font-size:15px;max-width:360px}.keys{display:none}.touch{display:flex}.overlay{background:linear-gradient(rgba(5,6,17,.84),rgba(5,6,17,.42))}.action{min-width:170px}}
-    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-  </style>
+  <link rel="stylesheet" href="./styles/main.css">
 </head>
 <body>
   <main class="shell" aria-label="Neon Dash endless runner">
     <canvas id="game" role="img" aria-label="Kitsune-01 chạy trên mái nhà neon và né chướng ngại"></canvas>
-    <div class="grain"></div><div class="flash" id="flash"></div>
+    <div class="grain"></div>
+    <div class="flash" id="flash"></div>
+
     <header class="topbar">
-      <div class="brand"><div class="mark"><span>狐</span></div><div><strong>NEON DASH</strong><small>KITSUNE // RUN_01</small></div></div>
-      <div class="stats"><div class="stat"><span>Quãng đường</span><b id="score">00000</b></div><div class="stat"><span>Kỷ lục</span><b id="best">00000</b></div></div>
+      <div class="brand">
+        <div class="mark"><span>狐</span></div>
+        <div><strong>NEON DASH</strong><small>KITSUNE // RUN_01</small></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Quãng đường</span><b id="score">00000</b></div>
+        <div class="stat"><span>Kỷ lục</span><b id="best">00000</b></div>
+      </div>
     </header>
-    <div class="energy"><div class="energy-label"><span>COMBO ENERGY</span><span id="combo">x1</span></div><div class="track"><div class="fill" id="fill"></div></div></div>
+
+    <div class="energy">
+      <div class="energy-label"><span>COMBO ENERGY</span><span id="combo">x1</span></div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </div>
+
     <section class="overlay" id="start">
       <div class="card">
         <div class="eyebrow">// Thành phố Neo-Sài Gòn · 02:17</div>
         <h1>Neon<br><em>Dash</em></h1>
         <p class="lead">Dẫn Kitsune-01 băng qua những mái nhà đang sụp đổ. Nhảy, trượt, thu thập lõi năng lượng — và đừng để đường chân trời bắt kịp bạn.</p>
         <button class="action" id="startBtn">Bắt đầu chạy ↗</button>
-        <div class="keys"><span><i class="key">SPACE</i> Nhảy / nhảy đôi</span><span><i class="key">↓</i> Trượt</span><span><i class="key">P</i> Tạm dừng</span></div>
+        <div class="keys">
+          <span><i class="key">SPACE</i> Nhảy / nhảy đôi</span>
+          <span><i class="key">↓</i> Trượt</span>
+          <span><i class="key">P</i> Tạm dừng</span>
+        </div>
       </div>
     </section>
+
     <section class="overlay hidden gameover" id="over">
-      <div class="card"><div class="eyebrow">// Tín hiệu bị ngắt</div><div class="newbest" id="newbest">KỶ LỤC MỚI</div><div class="result" id="final">00000</div><p class="lead">Kitsune-01 đã rơi khỏi tuyến chạy. Đồng bộ lại hệ thống và thử phá kỷ lục nhé.</p><button class="action" id="retryBtn">Chạy lại ↻</button></div>
+      <div class="card">
+        <div class="eyebrow">// Tín hiệu bị ngắt</div>
+        <div class="newbest" id="newbest">KỶ LỤC MỚI</div>
+        <div class="result" id="final">00000</div>
+        <p class="lead">Kitsune-01 đã rơi khỏi tuyến chạy. Đồng bộ lại hệ thống và thử phá kỷ lục nhé.</p>
+        <button class="action" id="retryBtn">Chạy lại ↻</button>
+      </div>
     </section>
-    <div class="touch" aria-label="Điều khiển cảm ứng"><button id="jumpBtn" aria-label="Nhảy">↑</button><button id="duckBtn" aria-label="Trượt">↓</button></div>
+
+    <div class="touch" aria-label="Điều khiển cảm ứng">
+      <button id="jumpBtn" aria-label="Nhảy">↑</button>
+      <button id="duckBtn" aria-label="Trượt">↓</button>
+    </div>
   </main>
-  <script>
-  (()=>{
-    const c=document.querySelector('#game'),x=c.getContext('2d');
-    const ui={start:document.querySelector('#start'),over:document.querySelector('#over'),score:document.querySelector('#score'),best:document.querySelector('#best'),final:document.querySelector('#final'),fill:document.querySelector('#fill'),combo:document.querySelector('#combo'),flash:document.querySelector('#flash'),newbest:document.querySelector('#newbest')};
-    let W,H,dpr=1,last=0,state='menu',time=0,score=0,best=+localStorage.getItem('neonDashBest')||0,speed=7,spawn=560,energy=0,combo=1,shake=0;
-    const ground=()=>H*.76;
-    const fox={x:0,y:0,vy:0,w:48,h:54,jumps:0,duck:false,frame:0};
-    let obstacles=[],orbs=[],particles=[],streaks=[],buildings=[];
-    ui.best.textContent=String(best).padStart(5,'0');
-    function resize(){dpr=Math.min(devicePixelRatio||1,2);W=c.clientWidth;H=c.clientHeight;c.width=W*dpr;c.height=H*dpr;x.setTransform(dpr,0,0,dpr,0,0);fox.x=Math.max(72,W*.16);if(state==='menu')fox.y=ground()-fox.h;makeCity()}
-    function makeCity(){buildings=[];let p=0;while(p<W+300){const w=35+Math.random()*90,h=50+Math.random()*220;buildings.push({x:p,w,h,seed:Math.random(),layer:Math.random()<.5?0:1});p+=w+8+Math.random()*18}}
-    function nextObstacleGap(){
-      // One full jump arc plus a short landing/reaction window at every speed.
-      return Math.max(420,speed*58)+160+Math.random()*180;
-    }
-    function reset(){score=0;speed=7;spawn=560;energy=0;combo=1;time=0;obstacles=[];orbs=[];particles=[];streaks=[];fox.y=ground()-fox.h;fox.vy=0;fox.jumps=0;fox.duck=false;state='play';ui.start.classList.add('hidden');ui.over.classList.add('hidden');ui.newbest.classList.remove('show')}
-    function jump(){if(state==='menu'||state==='over'){reset();return}if(state==='paused'){state='play';return}if(fox.jumps<2){fox.vy=fox.jumps? -12.2:-13.8;fox.jumps++;fox.duck=false;burst(fox.x+20,fox.y+fox.h,'#6fffe9',7)}}
-    function duck(v){if(state==='play'&&fox.y>=ground()-fox.h-2)fox.duck=v}
-    function burst(px,py,color,n=10){for(let i=0;i<n;i++)particles.push({x:px,y:py,vx:(Math.random()-.5)*6,vy:(Math.random()-.8)*5,life:25+Math.random()*20,color,size:1+Math.random()*3})}
-    function addObstacle(){const r=Math.random(),type=r<.38?'barrier':r<.7?'drone':'spire';let w=type==='drone'?58:type==='spire'?35:42,h=type==='drone'?28:type==='spire'?72:48;let y=type==='drone'?ground()-72:ground()-h;obstacles.push({x:W+40,y,w,h,type,passed:false,phase:Math.random()*6});if(Math.random()<.72){const oy=type==='drone'?ground()-28:ground()-105;for(let i=0;i<2+(Math.random()*3|0);i++)orbs.push({x:W+70+i*34,y:oy-Math.sin(i)*18,r:6,t:Math.random()*6})}}
-    function collide(a,b){const pad=8,ah=a.duck?28:a.h,ay=a.duck?a.y+a.h-ah:a.y;return a.x+pad<b.x+b.w-pad&&a.x+a.w-pad>b.x+pad&&ay+pad<b.y+b.h-pad&&ay+ah-pad>b.y+pad}
-    function end(){state='over';shake=18;ui.flash.animate([{opacity:.8},{opacity:0}],{duration:350});const old=best,b=Math.floor(score);if(b>best){best=b;localStorage.setItem('neonDashBest',best);ui.newbest.classList.add('show')}ui.best.textContent=String(best).padStart(5,'0');ui.final.textContent=String(b).padStart(5,'0');setTimeout(()=>ui.over.classList.remove('hidden'),380);burst(fox.x+24,fox.y+25,'#ff3d8d',28)}
-    function update(dt){if(state!=='play')return;time+=dt;speed=Math.min(15,7+score/850);score+=dt*speed*.105;spawn-=dt*speed;if(spawn<0){addObstacle();spawn=nextObstacleGap()}
-      fox.vy+=.72*dt;fox.y+=fox.vy*dt;if(fox.y>=ground()-fox.h){fox.y=ground()-fox.h;fox.vy=0;fox.jumps=0}fox.frame+=dt*speed*.18;
-      obstacles.forEach(o=>{o.x-=speed*dt;o.phase+=.06*dt;if(o.type==='drone')o.y=ground()-72+Math.sin(o.phase)*8;if(!o.passed&&o.x+o.w<fox.x){o.passed=true;energy=Math.min(100,energy+11);combo=1+Math.floor(energy/25);score+=combo*8}if(collide(fox,o))end()});
-      orbs.forEach(o=>{o.x-=speed*dt;o.t+=.08*dt;const dx=fox.x+24-o.x,dy=fox.y+25-(o.y+Math.sin(o.t)*5);if(dx*dx+dy*dy<900&&!o.got){o.got=true;energy=Math.min(100,energy+14);score+=25*combo;burst(o.x,o.y,'#6fffe9',10)}});
-      particles.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=.12*dt;p.life-=dt});
-      obstacles=obstacles.filter(o=>o.x>-100);orbs=orbs.filter(o=>o.x>-30&&!o.got);particles=particles.filter(p=>p.life>0);energy=Math.max(0,energy-.018*dt);combo=1+Math.floor(energy/25);ui.score.textContent=String(Math.floor(score)).padStart(5,'0');ui.fill.style.width=energy+'%';ui.combo.textContent='x'+combo;
-    }
-    function line(px,py,tx,ty,color,w=2){x.strokeStyle=color;x.lineWidth=w;x.beginPath();x.moveTo(px,py);x.lineTo(tx,ty);x.stroke()}
-    function drawCity(){const phase=(time*speed*.05);const dusk=(Math.sin(time*.001)+1)/2;const sky=x.createLinearGradient(0,0,0,H);sky.addColorStop(0,`rgb(${10+20*dusk},${8+8*dusk},${35+35*dusk})`);sky.addColorStop(1,'#101831');x.fillStyle=sky;x.fillRect(0,0,W,H);
-      x.fillStyle='rgba(112,92,255,.13)';x.beginPath();x.arc(W*.76,H*.25,Math.min(W,H)*.19,0,7);x.fill();x.strokeStyle='rgba(255,61,141,.25)';x.lineWidth=1;for(let i=0;i<4;i++){x.beginPath();x.arc(W*.76,H*.25,55+i*22,0,Math.PI*2);x.stroke()}
-      for(let i=0;i<55;i++){let sx=(i*173)%W,sy=(i*67)%(H*.52);x.fillStyle=i%7?'rgba(255,255,255,.35)':'#6fffe9';x.fillRect(sx,sy,1.4,1.4)}
-      buildings.forEach((b,i)=>{const par=b.layer?speed*.16:speed*.08;let bx=((b.x-phase*par)%(W+300)+W+300)%(W+300)-80,base=ground()+4;x.fillStyle=b.layer?'#10162d':'#171c3b';x.fillRect(bx,base-b.h,b.w,b.h);x.fillStyle=b.seed>.5?'rgba(111,255,233,.28)':'rgba(255,61,141,.24)';for(let wy=base-b.h+15;wy<base-12;wy+=20)for(let wx=bx+9;wx<bx+b.w-5;wx+=16)if(((wx+wy+i)|0)%4)x.fillRect(wx,wy,3,7)})
-      x.fillStyle='#090b18';x.fillRect(0,ground(),W,H-ground());x.strokeStyle='rgba(111,255,233,.35)';x.lineWidth=2;x.beginPath();x.moveTo(0,ground());x.lineTo(W,ground());x.stroke();for(let i=0;i<20;i++){let gx=((i*90-time*speed*1.4)%(W+100)+W+100)%(W+100)-50;line(gx,ground()+4,gx-90,H,'rgba(112,92,255,.13)',1)}
-    }
-    function drawFox(){x.save();x.translate(fox.x,fox.y+(fox.duck?18:0));const airborne=fox.y<ground()-fox.h-2,bob=airborne?0:Math.sin(fox.frame)*2;const leg=airborne?0:Math.sin(fox.frame)*11;x.translate(0,bob);x.shadowBlur=14;x.shadowColor='#ff3d8d';
-      if(fox.duck){x.rotate(.16);x.fillStyle='#ff3d8d';x.fillRect(10,18,38,22);x.beginPath();x.moveTo(42,18);x.lineTo(52,2);x.lineTo(55,22);x.fill();x.fillStyle='#6fffe9';x.fillRect(40,23,8,4);line(10,33,-12,24,'#ff3d8d',7)}else{
-        line(18,41,13+leg,54,'#705cff',8);line(36,41,41-leg,54,'#705cff',8);x.fillStyle='#ff3d8d';x.fillRect(10,15,37,30);x.fillStyle='#d92d78';x.fillRect(15,22,8,18);x.beginPath();x.moveTo(38,16);x.lineTo(41,-2);x.lineTo(50,18);x.moveTo(19,16);x.lineTo(14,1);x.lineTo(9,22);x.fill();x.fillStyle='#6fffe9';x.fillRect(37,23,9,4);x.fillStyle='#080b18';x.fillRect(40,23,3,4);line(11,34,-11,27+Math.sin(fox.frame*.6)*6,'#ff3d8d',7)}
-      x.shadowBlur=0;x.restore()}
-    function drawObjects(){orbs.forEach(o=>{const oy=o.y+Math.sin(o.t)*5;x.save();x.translate(o.x,oy);x.rotate(o.t);x.shadowBlur=18;x.shadowColor='#6fffe9';x.strokeStyle='#6fffe9';x.lineWidth=2;x.strokeRect(-5,-5,10,10);x.fillStyle='#fff';x.fillRect(-2,-2,4,4);x.restore()});obstacles.forEach(o=>{x.save();x.translate(o.x,o.y);if(o.type==='drone'){x.shadowBlur=18;x.shadowColor='#ff3d8d';x.fillStyle='#1a1937';x.fillRect(4,4,o.w-8,o.h-8);x.strokeStyle='#ff3d8d';x.strokeRect(4,4,o.w-8,o.h-8);x.fillStyle='#ff3d8d';x.fillRect(22,11,14,5);line(0,0,12,8,'#6fffe9',2);line(o.w,0,o.w-12,8,'#6fffe9',2)}else if(o.type==='spire'){x.fillStyle='#291942';x.beginPath();x.moveTo(0,o.h);x.lineTo(o.w*.55,0);x.lineTo(o.w,o.h);x.fill();x.strokeStyle='#ff3d8d';x.stroke();line(o.w*.55,10,o.w*.55,o.h-8,'rgba(255,61,141,.5)',2)}else{x.fillStyle='#191b3c';x.fillRect(0,0,o.w,o.h);x.strokeStyle='#705cff';x.lineWidth=2;x.strokeRect(0,0,o.w,o.h);for(let q=8;q<o.h;q+=13)line(5,q,o.w-5,q,'rgba(111,255,233,.5)',2)}x.restore()});particles.forEach(p=>{x.globalAlpha=Math.max(0,p.life/35);x.fillStyle=p.color;x.fillRect(p.x,p.y,p.size,p.size);x.globalAlpha=1})}
-    function render(){x.save();if(shake){x.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=.88}drawCity();drawObjects();drawFox();x.restore();if(state==='paused'){x.fillStyle='rgba(5,6,17,.55)';x.fillRect(0,0,W,H);x.fillStyle='#fff';x.textAlign='center';x.font="700 42px 'Chakra Petch'";x.fillText('TẠM DỪNG',W/2,H/2);x.font="14px 'Space Mono'";x.fillStyle='#a5a9c8';x.fillText('NHẤN P ĐỂ TIẾP TỤC',W/2,H/2+32)}}
-    function loop(t){const dt=Math.min(2.2,(t-last)/16.667||1);last=t;update(dt);render();requestAnimationFrame(loop)}
-    addEventListener('resize',resize);addEventListener('keydown',e=>{if(['Space','ArrowUp'].includes(e.code)){e.preventDefault();jump()}if(['ArrowDown','KeyS'].includes(e.code)){e.preventDefault();duck(true)}if(e.code==='KeyP'&&(state==='play'||state==='paused'))state=state==='play'?'paused':'play'});addEventListener('keyup',e=>{if(['ArrowDown','KeyS'].includes(e.code))duck(false)});
-    document.querySelector('#startBtn').onclick=reset;document.querySelector('#retryBtn').onclick=reset;document.querySelector('#jumpBtn').onpointerdown=e=>{e.preventDefault();jump()};document.querySelector('#duckBtn').onpointerdown=e=>{e.preventDefault();duck(true)};document.querySelector('#duckBtn').onpointerup=()=>duck(false);document.querySelector('#duckBtn').onpointercancel=()=>duck(false);c.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')jump()});
-    const mc=document.modelContext;
-    if(mc?.registerTool){
-      const lifecycle=new AbortController();
-      Promise.resolve(mc.registerTool({name:'start_neon_dash_run',title:'Bắt đầu lượt chạy',description:'Bắt đầu hoặc khởi động lại một lượt chơi Neon Dash và cập nhật trạng thái game đang hiển thị.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(){reset();return{status:'running',score:0,best}}},{signal:lifecycle.signal})).catch(()=>{});
-      Promise.resolve(mc.registerTool({name:'read_neon_dash_status',title:'Xem trạng thái lượt chạy',description:'Đọc trạng thái, điểm và kỷ lục hiện tại của Neon Dash mà không thay đổi game.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:false},execute(){return{status:state,score:Math.floor(score),best,combo}}},{signal:lifecycle.signal})).catch(()=>{});
-    }
-    resize();requestAnimationFrame(loop);
-  })();
-  </script>
+  <script type="module" src="./scripts/main.js"></script>
 </body>
 </html>
