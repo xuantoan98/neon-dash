@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --ink: #f6f4ff;
+  --muted: #a5a9c8;
+  --pink: #ff3d8d;
+  --cyan: #6fffe9;
+  --purple: #705cff;
+  --panel: rgba(12, 14, 34, .72);
+  --line: rgba(111, 255, 233, .18);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: #070811; color: var(--ink); font-family: 'Chakra Petch', system-ui, sans-serif; overflow: hidden; }
+body { min-height: 100dvh; display: grid; place-items: center; background: radial-gradient(circle at 70% 20%, #23184a 0, transparent 36%), radial-gradient(circle at 15% 85%, #17233e 0, transparent 38%), #070811; }
+button { font: inherit; color: inherit; }
+.shell { position: relative; width: min(1180px, 100vw); height: min(760px, 100dvh); min-height: 540px; overflow: hidden; background: #090b18; box-shadow: 0 0 100px rgba(112, 92, 255, .25); isolation: isolate; }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+.grain { position: absolute; inset: 0; pointer-events: none; z-index: 2; opacity: .055; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E"); }
+.topbar { position: absolute; z-index: 4; top: 0; left: 0; right: 0; display: flex; align-items: flex-start; justify-content: space-between; padding: 28px 34px; pointer-events: none; text-shadow: 0 2px 12px #050611; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.mark { width: 38px; height: 38px; border: 1px solid var(--cyan); display: grid; place-items: center; transform: rotate(45deg); box-shadow: 0 0 20px rgba(111, 255, 233, .25); }
+.mark span { transform: rotate(-45deg); color: var(--cyan); font-size: 18px; }
+.brand strong { display: block; font-size: 18px; letter-spacing: .16em; }
+.brand small { display: block; color: var(--muted); font: 10px 'Space Mono'; letter-spacing: .2em; margin-top: 3px; }
+.stats { display: flex; gap: 30px; text-align: right; }
+.stat span { display: block; color: var(--muted); font: 10px 'Space Mono'; letter-spacing: .18em; text-transform: uppercase; }
+.stat b { font: 700 24px 'Space Mono'; letter-spacing: .08em; }
+.energy { position: absolute; z-index: 4; right: 34px; top: 90px; width: 190px; pointer-events: none; }
+.energy-label { display: flex; justify-content: space-between; font: 10px 'Space Mono'; color: var(--muted); letter-spacing: .12em; }
+.track { height: 4px; background: rgba(255, 255, 255, .12); margin-top: 7px; overflow: hidden; }
+.fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--cyan)); box-shadow: 0 0 10px var(--cyan); transition: width .15s; }
+.overlay { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; padding: 28px; background: linear-gradient(90deg, rgba(5, 6, 17, .87), rgba(5, 6, 17, .3)); transition: .35s; }
+.overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.card { width: min(560px, 100%); margin-right: auto; margin-left: 5%; padding: 32px 0; }
+.eyebrow { font: 11px 'Space Mono'; color: var(--cyan); letter-spacing: .23em; text-transform: uppercase; margin-bottom: 14px; }
+.card h1 { font-size: clamp(54px, 8vw, 94px); line-height: .8; letter-spacing: -.045em; margin: 0; text-transform: uppercase; }
+.card h1 em { font-style: normal; color: transparent; -webkit-text-stroke: 1px var(--pink); text-shadow: 0 0 24px rgba(255, 61, 141, .3); }
+.lead { max-width: 470px; color: #c9cce2; font-size: 17px; line-height: 1.55; margin: 25px 0 28px; }
+.action { border: 0; background: var(--pink); padding: 15px 22px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; box-shadow: 6px 6px 0 #542040; transition: .15s; min-width: 190px; }
+.action:hover { transform: translate(2px, 2px); box-shadow: 4px 4px 0 #542040; }
+.action:active { transform: translate(6px, 6px); box-shadow: none; }
+.keys { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 30px; color: var(--muted); font: 12px 'Space Mono'; }
+.keys span { display: flex; align-items: center; gap: 7px; }
+.key { border: 1px solid rgba(255, 255, 255, .28); padding: 4px 8px; color: #fff; background: rgba(255, 255, 255, .06); min-width: 28px; text-align: center; }
+.gameover .eyebrow { color: var(--pink); }
+.result { font: 700 clamp(58px, 9vw, 104px) 'Space Mono'; line-height: 1; margin: 4px 0 10px; color: var(--cyan); text-shadow: 0 0 28px rgba(111, 255, 233, .25); }
+.newbest { display: none; color: #071017; background: var(--cyan); font: 700 11px 'Space Mono'; padding: 5px 8px; letter-spacing: .13em; width: max-content; margin-bottom: 13px; }
+.newbest.show { display: block; }
+.touch { position: absolute; z-index: 4; left: 24px; right: 24px; bottom: 22px; display: none; justify-content: space-between; pointer-events: none; }
+.touch button { pointer-events: auto; width: 80px; height: 80px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .25); background: rgba(9, 11, 24, .45); backdrop-filter: blur(8px); font-size: 24px; box-shadow: inset 0 0 18px rgba(111, 255, 233, .08); }
+.flash { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0; background: var(--pink); }
+
+@media (max-width: 700px) {
+  .shell { height: 100dvh; min-height: 500px; }
+  .topbar { padding: 18px; }
+  .brand small { display: none; }
+  .stats { gap: 14px; }
+  .stat b { font-size: 18px; }
+  .energy { right: 18px; top: 68px; width: 138px; }
+  .card { margin-left: 0; padding: 22px; }
+  .card h1 { font-size: 58px; }
+  .lead { font-size: 15px; max-width: 360px; }
+  .keys { display: none; }
+  .touch { display: flex; }
+  .overlay { background: linear-gradient(rgba(5, 6, 17, .84), rgba(5, 6, 17, .42)); }
+  .action { min-width: 170px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

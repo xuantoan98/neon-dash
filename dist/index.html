@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#090b18">
+  <meta name="description" content="Neon Dash — game endless runner với cáo máy Kitsune-01.">
+  <title>Neon Dash — Endless Runner</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23090b18' d='M0 0h64v64H0z'/%3E%3Cpath fill='%23ff3d8d' d='m13 15 15 8 8 23-18-8zM51 15l-15 8-8 23 18-8z'/%3E%3Ccircle cx='25' cy='31' r='3' fill='%236fffe9'/%3E%3Ccircle cx='39' cy='31' r='3' fill='%236fffe9'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
+  <main class="shell" aria-label="Neon Dash endless runner">
+    <canvas id="game" role="img" aria-label="Kitsune-01 chạy trên mái nhà neon và né chướng ngại"></canvas>
+    <div class="grain"></div>
+    <div class="flash" id="flash"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark"><span>狐</span></div>
+        <div><strong>NEON DASH</strong><small>KITSUNE // RUN_01</small></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Quãng đường</span><b id="score">00000</b></div>
+        <div class="stat"><span>Kỷ lục</span><b id="best">00000</b></div>
+      </div>
+    </header>
+
+    <div class="energy">
+      <div class="energy-label"><span>COMBO ENERGY</span><span id="combo">x1</span></div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </div>
+
+    <section class="overlay" id="start">
+      <div class="card">
+        <div class="eyebrow">// Thành phố Neo-Sài Gòn · 02:17</div>
+        <h1>Neon<br><em>Dash</em></h1>
+        <p class="lead">Dẫn Kitsune-01 băng qua những mái nhà đang sụp đổ. Nhảy, trượt, thu thập lõi năng lượng — và đừng để đường chân trời bắt kịp bạn.</p>
+        <button class="action" id="startBtn">Bắt đầu chạy ↗</button>
+        <div class="keys">
+          <span><i class="key">SPACE</i> Nhảy / nhảy đôi</span>
+          <span><i class="key">↓</i> Trượt</span>
+          <span><i class="key">P</i> Tạm dừng</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="overlay hidden gameover" id="over">
+      <div class="card">
+        <div class="eyebrow">// Tín hiệu bị ngắt</div>
+        <div class="newbest" id="newbest">KỶ LỤC MỚI</div>
+        <div class="result" id="final">00000</div>
+        <p class="lead">Kitsune-01 đã rơi khỏi tuyến chạy. Đồng bộ lại hệ thống và thử phá kỷ lục nhé.</p>
+        <button class="action" id="retryBtn">Chạy lại ↻</button>
+      </div>
+    </section>
+
+    <div class="touch" aria-label="Điều khiển cảm ứng">
+      <button id="jumpBtn" aria-label="Nhảy">↑</button>
+      <button id="duckBtn" aria-label="Trượt">↓</button>
+    </div>
+  </main>
+  <script type="module" src="./scripts/main.js"></script>
+</body>
+</html>
