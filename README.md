@@ -12,7 +12,13 @@ Tại thư mục dự án:
 node tools/serve.mjs
 ```
 
-Hoặc `python3 -m http.server 4173 --directory dist` (Windows: `py -m http.server 4173 --directory dist`). Mở [localhost:4173](http://localhost:4173). Dùng HTTP, không mở trực tiếp bằng `file://`, vì game dùng ES modules. Người chỉ muốn chơi không cần `npm install`.
+Lệnh trên chạy **chế độ dev**: sửa HTML/CSS/JS rồi reload là nhận code mới, không cần xóa cache hay chạy `precache`. Nếu trình duyệt đã cài service worker cũ, server thay nó bằng worker không cache và tải lại trang một lần. Cài đặt và kỷ lục vẫn được giữ.
+
+Chạy `npm run dev` để tự khởi động lại server khi sửa mã công cụ server (Node watch, không cần nodemon). Các file trong `dist/` được đọc trực tiếp mỗi request; sau khi lưu, reload trình duyệt để xem thay đổi. Chế độ này không tự reload trình duyệt khi lưu file.
+
+Để thử **offline/PWA như bản phát hành**, chạy `npm run precache` rồi `npm run preview`. Chế độ này vẫn cập nhật qua nút “Có bản mới — tải lại”. Dừng server dev trước khi chạy preview trên cùng cổng.
+
+Hoặc phục vụ bản PWA bằng `python3 -m http.server 4173 --directory dist` (Windows: `py -m http.server 4173 --directory dist`). Mở [localhost:4173](http://localhost:4173). Dùng HTTP, không mở trực tiếp bằng `file://`, vì game dùng ES modules. Người chỉ muốn chơi không cần `npm install`.
 
 Archive phát hành chỉ chứa game trong `dist/` và tài liệu, không chứa công cụ phát triển. Sau khi giải nén archive, dùng lệnh Python ở trên hoặc phục vụ `dist/` bằng static host. Các lệnh Node/npm bên dưới dành cho workspace mã nguồn đầy đủ.
 
@@ -23,6 +29,7 @@ Archive phát hành chỉ chứa game trong `dist/` và tài liệu, không ch�
 - P hoặc nút Ⅱ: tạm dừng. Tiếp tục bằng nút trong overlay, P, Space, ↑ hoặc nút cảm ứng nhảy.
 - Rời tab/cửa sổ: nhả input và tự pause; quay lại cần thao tác tiếp tục.
 - ⚙ mở cài đặt: âm thanh, âm lượng, giảm hiệu ứng, đồ họa nhẹ, skin và chủ đề. Đóng hộp thoại không tự tiếp tục lượt đang pause.
+- Khung xem trước trong Cài đặt cập nhật ngay nhân vật, thành phố và ánh sáng; có mức âm lượng và nút nghe thử. Preview dừng chuyển động khi bật giảm hiệu ứng và ngừng vẽ khi đóng cài đặt hoặc ẩn trang.
 - Hướng dẫn lần đầu có nút “Đã hiểu”; kết quả có thống kê thời gian, lõi, vật cản, combo và thử thách hoàn thành.
 - Ba thử thách mỗi lượt: 500 điểm, 5 lõi, 8 vật cản. Chúng chỉ ghi nhận thành tích, không thay đổi điểm thưởng, tốc độ hay hitbox Classic.
 
@@ -30,19 +37,19 @@ Kỷ lục tiếp tục dùng `neonDashBest`; cài đặt lưu riêng ở `neonD
 
 ## Kiến trúc
 
-| Module                                | Trách nhiệm                                   |
-| ------------------------------------- | --------------------------------------------- |
-| `main.js`                             | Khởi tạo, nối module, vòng đời trang          |
-| `game-loop.js`                        | Lập lịch, vật lý cố định 60 Hz                |
-| `game.js`, `entities.js`, `config.js` | Trạng thái, vật lý, va chạm, điểm và cấu hình |
-| `renderer.js`, `content.js`           | Canvas, skin/chủ đề và định nghĩa thử thách   |
-| `render-motion.js`                    | Snapshot và nội suy chỉ phục vụ hiển thị      |
-| `controls.js`, `ui.js`                | Input, HUD, overlay và kết quả                |
-| `audio.js`                            | Web Audio, giới hạn voice và cleanup          |
-| `preferences.js`, `settings-ui.js`    | Cài đặt, kiểm tra dữ liệu và giao diện        |
-| `storage.js`, `model-context.js`      | Kỷ lục và công cụ tích hợp tùy chọn           |
-| `performance.js`                      | Đo thời gian gọi render bằng vòng đệm cố định |
-| `offline.js`, `version.js`, `sw.js`   | PWA, phiên bản, cache và cập nhật             |
+| Module                                                    | Trách nhiệm                                      |
+| --------------------------------------------------------- | ------------------------------------------------ |
+| `main.js`                                                 | Khởi tạo, nối module, vòng đời trang             |
+| `game-loop.js`                                            | Lập lịch, vật lý cố định 60 Hz                   |
+| `game.js`, `entities.js`, `config.js`                     | Trạng thái, vật lý, va chạm, điểm và cấu hình    |
+| `renderer.js`, `content.js`                               | Canvas, skin/chủ đề và định nghĩa thử thách      |
+| `render-motion.js`                                        | Snapshot và nội suy chỉ phục vụ hiển thị         |
+| `controls.js`, `ui.js`                                    | Input, HUD, overlay và kết quả                   |
+| `audio.js`                                                | Web Audio, giới hạn voice và cleanup             |
+| `preferences.js`, `settings-ui.js`, `settings-preview.js` | Cài đặt, kiểm tra dữ liệu và xem trước trực tiếp |
+| `storage.js`, `model-context.js`                          | Kỷ lục và công cụ tích hợp tùy chọn              |
+| `performance.js`                                          | Đo thời gian gọi render bằng vòng đệm cố định    |
+| `offline.js`, `version.js`, `sw.js`                       | PWA, phiên bản, cache và cập nhật                |
 
 Các module nằm trong `dist/scripts/`; worker ở `dist/sw.js`. `dist/` là mã được phục vụ trực tiếp, không phải thư mục build để xóa. Bộ test nằm trong `tests/`, công cụ phát triển trong `tools/`.
 
@@ -73,7 +80,7 @@ npm run test:browser -- --project=chromium --project=firefox --project=mobile
 
 CI được cấu hình tại `.github/workflows/check.yml`; chỉ hoạt động khi repo được đưa lên GitHub. Workspace hiện tại chưa có Git remote hoạt động.
 
-Sau khi sửa `dist/`, chạy `npm run precache` để sinh revision mới. Tab đã cài offline cần bấm nút cập nhật hoặc đóng tất cả tab rồi mở lại. Khi thay font/icon, chạy `npm run assets` trước; giữ các file tài nguyên sinh ra trong repository để game chạy không cần npm.
+Trước khi thử bản PWA hoặc phát hành, chạy `npm run precache` để sinh revision mới. Không cần bước này khi dùng server dev. Tab đã cài offline cần bấm nút cập nhật hoặc đóng tất cả tab rồi mở lại. Khi thay font/icon, chạy `npm run assets` trước; giữ các file tài nguyên sinh ra trong repository để game chạy không cần npm.
 
 Đóng gói bằng `npm run release`: tạo archive và SHA-256 trong `releases/`. Xem [hướng dẫn phát hành/rollback](docs/release.md) và [changelog](CHANGELOG.md).
 

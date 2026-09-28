@@ -8,6 +8,14 @@ export function setupOffline() {
   version.textContent = `Neon Dash v${VERSION}`;
   const lifecycle = new AbortController();
   const options = { signal: lifecycle.signal };
+  if (document.querySelector('meta[name="neon-dash-dev"]')) {
+    status.textContent = 'Chế độ dev · tải lại để nhận thay đổi';
+    if ('serviceWorker' in navigator && window.isSecureContext) {
+      // The dev server provides a network-only replacement for any old PWA worker.
+      void navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {});
+    }
+    return () => lifecycle.abort();
+  }
   let registration;
   let installPrompt;
   let reloadRequested = false;

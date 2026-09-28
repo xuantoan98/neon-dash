@@ -1,6 +1,6 @@
 # Kiểm thử trình duyệt
 
-Các kiểm thử chỉ tương tác qua giao diện và trạng thái trình duyệt công khai, không cần API debug của game. Server tự khởi động tại `http://127.0.0.1:4173`; khi chạy cục bộ có thể dùng lại server đang mở.
+Các kiểm thử chỉ tương tác qua giao diện và trạng thái trình duyệt công khai, không cần API debug của game. Server PWA riêng tự khởi động tại `http://127.0.0.1:4175`, tách khỏi server dev ở cổng 4173 để kiểm tra offline đúng như bản phát hành.
 
 ## Chạy
 

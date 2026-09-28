@@ -4,6 +4,7 @@ import { resolve, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../dist/', import.meta.url));
+const devWorker = new URL('./dev-sw.js', import.meta.url);
 const types = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -16,7 +17,7 @@ const types = {
 };
 const port = Number(process.env.PORT || 4173);
 
-export function createStaticServer(directory = root) {
+export function createStaticServer(directory = root, { development = false } = {}) {
   return createServer(async (request, response) => {
     try {
       const path = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
@@ -29,10 +30,15 @@ export function createStaticServer(directory = root) {
         response.writeHead(405, { Allow: 'GET, HEAD' }).end();
         return;
       }
-      const body = await readFile(file);
+      let body = await readFile(development && path === '/sw.js' ? devWorker : file);
+      if (development && extname(file) === '.html') {
+        body = body
+          .toString('utf8')
+          .replace('<head>', '<head>\n    <meta name="neon-dash-dev" content="true" />');
+      }
       response.writeHead(200, {
         'Content-Type': types[extname(file)] || 'application/octet-stream',
-        'Cache-Control': 'no-cache',
+        'Cache-Control': development ? 'no-store' : 'no-cache',
       });
       response.end(request.method === 'HEAD' ? undefined : body);
     } catch {
@@ -42,6 +48,11 @@ export function createStaticServer(directory = root) {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const server = createStaticServer();
-  server.listen(port, '127.0.0.1', () => console.log(`Neon Dash: http://127.0.0.1:${port}`));
+  const development = !process.argv.includes('--preview');
+  const server = createStaticServer(root, { development });
+  server.listen(port, '127.0.0.1', () =>
+    console.log(
+      `Neon Dash (${development ? 'dev, no cache' : 'PWA preview'}): http://127.0.0.1:${port}`,
+    ),
+  );
 }

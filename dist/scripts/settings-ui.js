@@ -1,9 +1,12 @@
+import { createSettingsPreview } from './settings-preview.js';
+
 export function bindSettings({ game, preferences, audio }) {
   const dialog = document.getElementById('settings');
   const open = document.getElementById('settingsBtn');
   const close = document.getElementById('closeSettings');
   const controller = new AbortController();
   const options = { signal: controller.signal };
+  const preview = createSettingsPreview({ dialog, preferences });
   const fields = {
     sound: document.getElementById('soundSetting'),
     volume: document.getElementById('volumeSetting'),
@@ -26,10 +29,19 @@ export function bindSettings({ game, preferences, audio }) {
     () => {
       game.pause();
       dialog.showModal();
+      preview.refresh();
     },
     options,
   );
   close.addEventListener('click', () => dialog.close(), options);
+  document.getElementById('previewSoundBtn').addEventListener(
+    'click',
+    () => {
+      audio.unlock();
+      audio.play('orb');
+    },
+    options,
+  );
   dialog.addEventListener(
     'click',
     (event) => {
@@ -59,6 +71,7 @@ export function bindSettings({ game, preferences, audio }) {
   return () => {
     controller.abort();
     unsubscribe();
+    preview.dispose();
     if (dialog.open) dialog.close();
   };
 }

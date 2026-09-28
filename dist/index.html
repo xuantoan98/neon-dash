@@ -123,47 +123,102 @@
           ×
         </button>
       </div>
-      <label class="setting-row"
-        ><span>Âm thanh</span><input id="soundSetting" type="checkbox"
-      /></label>
-      <label class="setting-row" for="volumeSetting"
-        >Âm lượng <output id="volumeValue">25%</output></label
-      >
-      <input id="volumeSetting" type="range" min="0" max="1" step="0.05" value="0.25" />
-      <label class="setting-row" for="motionSetting">Giảm hiệu ứng</label>
-      <select id="motionSetting">
-        <option value="system">Theo hệ thống</option>
-        <option value="on">Bật</option>
-        <option value="off">Tắt</option>
-      </select>
-      <label class="setting-row" for="qualitySetting">Chất lượng đồ họa</label>
-      <select id="qualitySetting">
-        <option value="high">Đầy đủ ánh sáng</option>
-        <option value="low">Nhẹ — giảm ánh sáng</option>
-      </select>
-      <label class="setting-row" for="skinSetting">Nhân vật</label>
-      <select id="skinSetting">
-        <option value="kitsune">Kitsune hồng</option>
-        <option value="arctic">Cáo băng</option>
-        <option value="solar">Cáo mặt trời</option>
-      </select>
-      <label class="setting-row" for="sceneSetting">Thành phố</label>
-      <select id="sceneSetting">
-        <option value="neo">Neo-Sài Gòn</option>
-        <option value="dawn">Bình minh</option>
-        <option value="arctic">Cực quang</option>
-      </select>
-      <p class="hint">Skin, chủ đề và thử thách không thay đổi hitbox, tốc độ hay điểm Classic.</p>
-      <p class="hint">Đóng cài đặt rồi bấm Tiếp tục để trở lại lượt đang tạm dừng.</p>
-      <details>
-        <summary>Hiệu năng</summary>
-        <p id="performanceInfo" class="hint">Đang đo…</p>
-      </details>
-      <p class="hint">
-        <span id="versionInfo"></span> · <span id="offlineStatus">Đang chuẩn bị offline…</span>
+      <p class="settings-intro">
+        Tinh chỉnh chuyến chạy theo cách của bạn. Thay đổi được lưu tự động.
       </p>
-      <button type="button" class="utility" id="installBtn" hidden>Cài lên thiết bị</button>
-      <button type="button" class="utility" id="updateBtn" hidden>Có bản mới — tải lại</button>
+      <div class="settings-layout">
+        <div class="settings-controls">
+          <h3 class="settings-section-title">Diện mạo</h3>
+          <div class="settings-pair">
+            <div>
+              <label class="setting-row" for="skinSetting">Nhân vật</label>
+              <select id="skinSetting">
+                <option value="kitsune">Kitsune hồng</option>
+                <option value="arctic">Cáo băng</option>
+                <option value="solar">Cáo mặt trời</option>
+              </select>
+            </div>
+            <div>
+              <label class="setting-row" for="sceneSetting">Thành phố</label>
+              <select id="sceneSetting">
+                <option value="neo">Neo-Sài Gòn</option>
+                <option value="dawn">Bình minh</option>
+                <option value="arctic">Cực quang</option>
+              </select>
+            </div>
+          </div>
+          <label class="setting-row" for="qualitySetting">Chất lượng đồ họa</label>
+          <select id="qualitySetting">
+            <option value="high">Đầy đủ ánh sáng</option>
+            <option value="low">Nhẹ — giảm ánh sáng</option>
+          </select>
+          <label class="setting-row" for="motionSetting">Giảm hiệu ứng</label>
+          <select id="motionSetting" aria-describedby="motionHint">
+            <option value="system">Theo hệ thống</option>
+            <option value="on">Bật</option>
+            <option value="off">Tắt</option>
+          </select>
+          <p class="hint" id="motionHint">
+            Giảm rung và chuyển cảnh trong game; dừng chuyển động ở bản xem trước.
+          </p>
+          <h3 class="settings-section-title">Âm thanh</h3>
+          <label class="setting-row"
+            ><span>Âm thanh</span><input id="soundSetting" type="checkbox"
+          /></label>
+          <label class="setting-row" for="volumeSetting"
+            >Âm lượng <output id="volumeValue">25%</output></label
+          >
+          <input id="volumeSetting" type="range" min="0" max="1" step="0.05" value="0.25" />
+          <div class="sound-preview">
+            <meter
+              id="previewVolume"
+              min="0"
+              max="1"
+              value="0.25"
+              aria-label="Mức âm lượng nghe thử"
+            ></meter>
+            <span id="previewSound">Âm lượng 25%</span>
+            <button type="button" class="utility" id="previewSoundBtn">Nghe thử ♪</button>
+          </div>
+          <details>
+            <summary>Hiệu năng</summary>
+            <p id="performanceInfo" class="hint">Đang đo…</p>
+          </details>
+          <p class="hint">
+            <span id="versionInfo"></span> · <span id="offlineStatus">Đang chuẩn bị offline…</span>
+          </p>
+          <button type="button" class="utility" id="installBtn" hidden>Cài lên thiết bị</button>
+          <button type="button" class="utility" id="updateBtn" hidden>Có bản mới — tải lại</button>
+        </div>
+        <section class="settings-preview" aria-labelledby="previewTitle">
+          <div class="preview-heading">
+            <h3 id="previewTitle">Xem trước</h3>
+            <span class="preview-badge">CẬP NHẬT TỨC THÌ</span>
+          </div>
+          <div class="preview-stage">
+            <canvas
+              id="settingsPreview"
+              role="img"
+              aria-label="Xem trước nhân vật và thành phố"
+            ></canvas>
+            <span class="preview-stage-label" aria-hidden="true">NEON DASH / CLASSIC</span>
+          </div>
+          <div class="preview-caption" aria-live="polite" aria-atomic="true">
+            <strong id="previewAppearance">Kitsune hồng · Neo-Sài Gòn</strong>
+            <div class="preview-tags">
+              <span id="previewQuality">Đầy đủ ánh sáng</span>
+              <span id="previewMotion">Chuyển động bật</span>
+            </div>
+          </div>
+          <p class="hint preview-note">
+            Hình ảnh trong game với cài đặt của bạn. Nhân vật và thành phố không thay đổi luật chơi
+            hay điểm số.
+          </p>
+        </section>
+      </div>
+      <p class="hint settings-footer">
+        Đóng cài đặt rồi bấm Tiếp tục để trở lại lượt đang tạm dừng.
+      </p>
     </dialog>
     <noscript>Vui lòng bật JavaScript để chơi Neon Dash.</noscript>
     <script type="module" src="./scripts/main.js"></script>

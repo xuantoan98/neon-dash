@@ -335,14 +335,18 @@ canvas {
   font: 10px var(--font-mono);
 }
 dialog {
-  width: min(420px, calc(100vw - 32px));
+  width: min(940px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);
-  overflow: auto;
+  overflow: hidden;
   background: #111426;
   color: var(--ink);
   border: 1px solid #454766;
   border-radius: 14px;
   padding: 22px;
+}
+dialog[open] {
+  display: flex;
+  flex-direction: column;
 }
 dialog::backdrop {
   background: rgba(3, 5, 16, 0.8);
@@ -357,6 +361,201 @@ dialog::backdrop {
 .dialog-heading h2 {
   margin: 0;
 }
+.dialog-heading,
+.settings-intro,
+.settings-footer {
+  flex-shrink: 0;
+}
+.settings-intro {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 8px 0 22px;
+}
+.settings-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: 28px;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #454766 transparent;
+}
+.settings-controls {
+  min-width: 0;
+}
+.settings-section-title {
+  margin: 0;
+  color: var(--cyan);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.settings-controls .settings-section-title:not(:first-child) {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid #2c3049;
+}
+.settings-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.settings-preview {
+  position: sticky;
+  top: 0;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #383d59;
+  border-radius: 10px;
+  background: #0c1020;
+}
+.preview-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 16px;
+}
+.preview-heading h3 {
+  margin: 0;
+  font-size: 15px;
+}
+.preview-badge {
+  color: var(--cyan);
+  font: 9px var(--font-mono);
+  letter-spacing: 0.03em;
+}
+.preview-stage {
+  position: relative;
+  height: clamp(180px, 33dvh, 280px);
+  overflow: hidden;
+  border-block: 1px solid #2c3049;
+}
+#settingsPreview {
+  touch-action: pan-y;
+}
+.preview-stage-label {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  color: #c9cce2;
+  font: 9px var(--font-mono);
+  letter-spacing: 0.1em;
+  pointer-events: none;
+}
+.preview-caption {
+  padding: 16px;
+}
+.preview-caption strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 600;
+}
+.preview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.preview-tags span {
+  padding: 4px 8px;
+  border: 1px solid #343950;
+  border-radius: 4px;
+  color: #c9cce2;
+  font-size: 11px;
+}
+.preview-note {
+  margin: 0;
+  padding: 0 16px 16px;
+}
+.sound-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 20px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.sound-preview meter {
+  width: 50px;
+  min-width: 24px;
+  accent-color: var(--cyan);
+}
+.sound-preview button {
+  margin-left: auto;
+  white-space: nowrap;
+}
+.sound-preview button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.settings-footer {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid #2c3049;
+}
+@media (max-width: 700px) {
+  dialog {
+    width: calc(100vw - 20px);
+    max-height: calc(100dvh - 20px);
+    padding: 16px;
+  }
+  .settings-intro {
+    margin-bottom: 14px;
+    font-size: 12px;
+  }
+  .settings-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    scroll-padding-top: calc(clamp(90px, 18dvh, 145px) + 130px);
+  }
+  .settings-controls,
+  .settings-preview {
+    width: 100%;
+    flex-shrink: 0;
+  }
+  .settings-preview {
+    order: -1;
+    z-index: 1;
+  }
+  .preview-heading {
+    padding: 8px 12px;
+  }
+  .preview-stage {
+    height: clamp(90px, 18dvh, 145px);
+  }
+  .preview-caption {
+    padding: 8px 12px;
+  }
+  .preview-caption strong {
+    font-size: 14px;
+  }
+  .preview-tags {
+    margin-top: 6px;
+  }
+  .preview-tags span {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+  .preview-note {
+    display: none;
+  }
+  .settings-footer {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+}
+@media (max-height: 550px) {
+  .settings-layout {
+    scroll-padding-top: 0;
+  }
+  .settings-preview {
+    position: static;
+  }
+}
 .setting-row {
   margin: 18px 0 8px;
 }
@@ -367,6 +566,9 @@ select {
 input[type='range'],
 select {
   width: 100%;
+}
+input[type='range'] {
+  margin-inline: 0;
 }
 select {
   background: #090b18;
