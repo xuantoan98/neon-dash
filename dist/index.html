@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#090b18" />
+    <meta name="description" content="Neon Dash — game endless runner với cáo máy Kitsune-01." />
+    <meta name="application-name" content="Neon Dash" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta property="og:title" content="Neon Dash — Kitsune-01" />
+    <meta property="og:description" content="Nhảy đôi, trượt và săn combo trong thành phố neon." />
+    <meta property="og:type" content="website" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./assets/icon-192.png" />
+    <title>Neon Dash — Endless Runner</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23090b18' d='M0 0h64v64H0z'/%3E%3Cpath fill='%23ff3d8d' d='m13 15 15 8 8 23-18-8zM51 15l-15 8-8 23 18-8z'/%3E%3Ccircle cx='25' cy='31' r='3' fill='%236fffe9'/%3E%3Ccircle cx='39' cy='31' r='3' fill='%236fffe9'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles/main.css" />
+    <link rel="stylesheet" href="./styles/fonts.css" />
+  </head>
+  <body>
+    <main class="shell" aria-label="Neon Dash endless runner">
+      <canvas
+        id="game"
+        role="img"
+        aria-label="Kitsune-01 chạy trên mái nhà neon và né chướng ngại"
+      ></canvas>
+      <div class="grain" aria-hidden="true"></div>
+      <div class="flash" id="flash" aria-hidden="true"></div>
+      <p id="gameStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        Sẵn sàng. Nhấn nút Bắt đầu chạy hoặc phím Space để chơi.
+      </p>
+
+      <header class="topbar">
+        <div class="brand">
+          <div class="mark"><span>狐</span></div>
+          <div><strong>NEON DASH</strong><small>KITSUNE // RUN_01</small></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><span>Quãng đường</span><b id="score">00000</b></div>
+          <div class="stat"><span>Kỷ lục</span><b id="best">00000</b></div>
+        </div>
+      </header>
+
+      <div class="game-actions" aria-label="Tùy chọn lượt chơi">
+        <button type="button" id="pauseBtn" class="utility" disabled aria-label="Tạm dừng">
+          Ⅱ
+        </button>
+        <button type="button" id="settingsBtn" class="utility" aria-label="Cài đặt">⚙</button>
+      </div>
+
+      <div class="energy">
+        <div class="energy-label"><span>COMBO ENERGY</span><span id="combo">x1</span></div>
+        <div class="track"><div class="fill" id="fill"></div></div>
+      </div>
+
+      <section class="overlay" id="start">
+        <div class="card">
+          <div class="eyebrow">// Thành phố Neo-Sài Gòn · 02:17</div>
+          <h1>Neon<br /><em>Dash</em></h1>
+          <p class="lead">
+            Dẫn Kitsune-01 băng qua những mái nhà đang sụp đổ. Nhảy, trượt, thu thập lõi năng lượng
+            — và đừng để đường chân trời bắt kịp bạn.
+          </p>
+          <button type="button" class="action" id="startBtn">Bắt đầu chạy ↗</button>
+          <p class="hint">CLASSIC · 3 thử thách mỗi lượt · Skin trong Cài đặt</p>
+          <aside id="tutorial" class="tutorial" aria-label="Hướng dẫn lần đầu">
+            <strong>Chuyến chạy đầu tiên?</strong>
+            <p>↑ để nhảy; bấm lần nữa khi ở trên không để nhảy đôi. Giữ ↓ để trượt dưới drone.</p>
+            <p>Vượt vật cản và nhặt lõi để nạp combo. Combo cao giúp nhận thêm điểm thưởng.</p>
+            <button type="button" class="text-button" id="dismissTutorial">Đã hiểu ✓</button>
+          </aside>
+          <div class="keys">
+            <span><i class="key">SPACE</i> Nhảy / nhảy đôi</span>
+            <span><i class="key">↓</i> Trượt</span>
+            <span><i class="key">P</i> Tạm dừng</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="overlay hidden pause-screen" id="pause" aria-labelledby="pauseTitle">
+        <div class="card compact-card">
+          <div class="eyebrow">// Nghỉ một nhịp</div>
+          <h2 id="pauseTitle">Tạm dừng</h2>
+          <p class="lead">
+            Nhảy hai lần để vượt chướng ngại. Giữ ↓ để trượt dưới drone, nhả để đứng lên.
+          </p>
+          <button type="button" class="action" id="resumeBtn">Tiếp tục ↗</button>
+          <button type="button" class="utility" id="endBtn">Kết thúc lượt</button>
+          <p class="hint">Phím P, Space hoặc ↑ cũng tiếp tục lượt chơi.</p>
+        </div>
+      </section>
+
+      <section class="overlay hidden gameover" id="over">
+        <div class="card">
+          <div class="eyebrow">// Tín hiệu bị ngắt</div>
+          <div class="newbest" id="newbest">KỶ LỤC MỚI</div>
+          <div class="result" id="final">00000</div>
+          <p class="hint" id="runSummary"></p>
+          <p class="hint" id="finalChallenges"></p>
+          <p class="lead">
+            Kitsune-01 đã rơi khỏi tuyến chạy. Đồng bộ lại hệ thống và thử phá kỷ lục nhé.
+          </p>
+          <button type="button" class="action" id="retryBtn">Chạy lại ↻</button>
+        </div>
+      </section>
+
+      <p id="missions" class="missions" aria-label="Tiến độ thử thách lượt chơi"></p>
+      <div class="touch" aria-label="Điều khiển cảm ứng">
+        <button type="button" id="jumpBtn" aria-label="Nhảy">↑</button>
+        <button type="button" id="duckBtn" aria-label="Trượt — nhấn giữ">
+          ↓<small>GIỮ</small>
+        </button>
+      </div>
+    </main>
+    <dialog id="settings" aria-labelledby="settingsTitle">
+      <div class="dialog-heading">
+        <h2 id="settingsTitle">Cài đặt</h2>
+        <button type="button" class="utility" id="closeSettings" aria-label="Đóng cài đặt">
+          ×
+        </button>
+      </div>
+      <label class="setting-row"
+        ><span>Âm thanh</span><input id="soundSetting" type="checkbox"
+      /></label>
+      <label class="setting-row" for="volumeSetting"
+        >Âm lượng <output id="volumeValue">25%</output></label
+      >
+      <input id="volumeSetting" type="range" min="0" max="1" step="0.05" value="0.25" />
+      <label class="setting-row" for="motionSetting">Giảm hiệu ứng</label>
+      <select id="motionSetting">
+        <option value="system">Theo hệ thống</option>
+        <option value="on">Bật</option>
+        <option value="off">Tắt</option>
+      </select>
+      <label class="setting-row" for="qualitySetting">Chất lượng đồ họa</label>
+      <select id="qualitySetting">
+        <option value="high">Đầy đủ ánh sáng</option>
+        <option value="low">Nhẹ — giảm ánh sáng</option>
+      </select>
+      <label class="setting-row" for="skinSetting">Nhân vật</label>
+      <select id="skinSetting">
+        <option value="kitsune">Kitsune hồng</option>
+        <option value="arctic">Cáo băng</option>
+        <option value="solar">Cáo mặt trời</option>
+      </select>
+      <label class="setting-row" for="sceneSetting">Thành phố</label>
+      <select id="sceneSetting">
+        <option value="neo">Neo-Sài Gòn</option>
+        <option value="dawn">Bình minh</option>
+        <option value="arctic">Cực quang</option>
+      </select>
+      <p class="hint">Skin, chủ đề và thử thách không thay đổi hitbox, tốc độ hay điểm Classic.</p>
+      <p class="hint">Đóng cài đặt rồi bấm Tiếp tục để trở lại lượt đang tạm dừng.</p>
+      <details>
+        <summary>Hiệu năng</summary>
+        <p id="performanceInfo" class="hint">Đang đo…</p>
+      </details>
+      <p class="hint">
+        <span id="versionInfo"></span> · <span id="offlineStatus">Đang chuẩn bị offline…</span>
+      </p>
+      <button type="button" class="utility" id="installBtn" hidden>Cài lên thiết bị</button>
+      <button type="button" class="utility" id="updateBtn" hidden>Có bản mới — tải lại</button>
+    </dialog>
+    <noscript>Vui lòng bật JavaScript để chơi Neon Dash.</noscript>
+    <script type="module" src="./scripts/main.js"></script>
+  </body>
+</html>

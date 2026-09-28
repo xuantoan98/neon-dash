@@ -1,0 +1,8 @@
+node_modules
+releases
+test-results
+playwright-report
+package-lock.json
+dist/assets/fonts
+dist/styles/fonts.css
+dist/precache-manifest.js
